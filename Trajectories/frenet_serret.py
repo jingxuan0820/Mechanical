@@ -11,16 +11,20 @@ from DataProcessor import DataProcessor
 
 logger = logging.getLogger(__name__)
 
-def main(filename,initial_acceleration, initial_velocity, initial_position):
+def main(filename,initial_acceleration, initial_velocity, initial_position, file_of_gravity):
 
 	data = pd.read_csv(filename, header = 1, sep = '\t', dtype='float64')
 	print(data)
 	"""
-	PRE-PROCESSING DATA
+	PRE-PROCESSING DATA  g = 9.915848076923066
 	"""
 	logger.info('Starting with Data PRE-PROCESSING for phywe')
 
 	Process = DataProcessor(data)
+	if file_of_gravity:
+		gravity = Process.calculateGravity()
+		logger.info('The value of gravity in your place is {}'.format(gravity))
+		return 0
 	Process.phyweAcceleration(initial_acceleration)
 	data = Process.data
 
@@ -226,6 +230,7 @@ if __name__ =='__main__':
 	# initial acceleration is the first value before the phywe accelerator is on
 	# it is better that value will be 0.0, 0.0, 0.0, 0.0, I want to say, the movil
 	# was still
+	file_of_gravity = False
 	initial_acceleration = np.array([0.0,0.0,0.0,0.0])
 	initial_velocity = np.array([0.0,0.0,0.0])
 	initial_position = np.array([0.0,0.0,0.0])
@@ -234,4 +239,4 @@ if __name__ =='__main__':
 						help = 'File to calculate Frenet Serret, data in cartesian',
 						type = str)
 	args = parser.parse_args()
-	main(args.filename, initial_acceleration, initial_velocity, initial_position)
+	main(args.filename, initial_acceleration, initial_velocity, initial_position, file_of_gravity)

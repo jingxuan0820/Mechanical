@@ -18,7 +18,15 @@ class DataProcessor():
 				temp_vector[i] = self.data.iloc[i,j] - self.data.iloc[i-1,j]
 			self.data.loc[:,columns[j]] = temp_vector
 
-	def 
+	def smoothData(self):
+		pass
+
+	def calculateGravity(self):
+		gravity = 0
+		for i in range(self.data.shape[0]):
+
+			gravity += self.data.iloc[i,1]
+		return gravity/self.data.shape[0]
 
 
 
