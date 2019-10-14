@@ -7,13 +7,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
+from DataProcessor import DataProcessor
+
 logger = logging.getLogger(__name__)
 
-def main(filename, initial_velocity, initial_position):
+def main(filename,initial_acceleration, initial_velocity, initial_position):
 
-	data = pd.read_csv(filename, header = 0, sep = '\t', dtype='float64')
+	data = pd.read_csv(filename, header = 1, sep = '\t', dtype='float64')
+	print(data)
+	"""
+	PRE-PROCESSING DATA
+	"""
+	logger.info('Starting with Data PRE-PROCESSING for phywe')
 
+	Process = DataProcessor(data)
+	Process.phyweAcceleration(initial_acceleration)
+	data = Process.data
 
+	print(data)
+
+	"""
+	Continuing with the analysis
+	"""
 	# Its taken the acceleration in cartesian coordinates, the first row is the time, and other three
 	# are acceleration in the three components
 	acceleration = data.iloc[:,2:].values
@@ -95,7 +110,10 @@ def main(filename, initial_velocity, initial_position):
 	ax = plt.axes(projection="3d")
 
 	ax.plot3D(list(positional_vector[:,0]),list(positional_vector[:,1]),list(positional_vector[:,2]), 'gray')
-
+	ax.set_title('Positional vector')
+	ax.set_xlabel('x position (m)')
+	ax.set_ylabel('y position (m)')
+	ax.set_zlabel('z position (m)')
 	plt.show()
 
 def curvature_function(velocity_vector, acceleration):
@@ -205,6 +223,10 @@ def is_all_in_order(v1,v2):
 
 
 if __name__ =='__main__':
+	# initial acceleration is the first value before the phywe accelerator is on
+	# it is better that value will be 0.0, 0.0, 0.0, 0.0, I want to say, the movil
+	# was still
+	initial_acceleration = np.array([0.0,0.0,0.0,0.0])
 	initial_velocity = np.array([0.0,0.0,0.0])
 	initial_position = np.array([0.0,0.0,0.0])
 	parser = argparse.ArgumentParser()
@@ -212,4 +234,4 @@ if __name__ =='__main__':
 						help = 'File to calculate Frenet Serret, data in cartesian',
 						type = str)
 	args = parser.parse_args()
-	main(args.filename, initial_velocity, initial_position)
+	main(args.filename, initial_acceleration, initial_velocity, initial_position)
