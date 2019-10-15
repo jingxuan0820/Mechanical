@@ -14,21 +14,21 @@ logger = logging.getLogger(__name__)
 def main(filename,initial_acceleration, initial_velocity, initial_position, file_of_gravity):
 
 	data = pd.read_csv(filename, header = 1, sep = '\t', dtype='float64')
-	print(data)
+	
 	"""
 	PRE-PROCESSING DATA  g = 9.915848076923066
 	"""
 	logger.info('Starting with Data PRE-PROCESSING for phywe')
-
+	"""
 	Process = DataProcessor(data)
 	if file_of_gravity:
 		gravity = Process.calculateGravity()
 		logger.info('The value of gravity in your place is {}'.format(gravity))
 		return 0
-	Process.phyweAcceleration(initial_acceleration)
+	#Process.phyweAcceleration(initial_acceleration)
+	Process.adjustForFilterTime(0.1)
 	data = Process.data
-
-	print(data)
+	"""
 
 	"""
 	Continuing with the analysis
